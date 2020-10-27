@@ -34,6 +34,6 @@ jobs:
     - name: Analysing the code with pylint
       run: |
         pylint covidotron/*
-    - name: Test with pytest
-      run: |
-        pytest
+#     - name: Test with pytest
+#       run: |
+#         pytest
