@@ -12,3 +12,4 @@ for i in imgList:
     images.append(imgCurr)
 
 for i in images:
+    pass
