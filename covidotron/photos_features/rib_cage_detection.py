@@ -9,26 +9,30 @@ path = 'pics/healthy'
 img_ref = cv2.imread('pics/ref_image.jpg', 0)
 imgList = os.listdir(path)
 images = []
-images_new = cv2.imread('pics/COVID-19/covid19_37yo_male_RTG.jpg',0)
+images_new = cv2.imread('pics/COVID-19/covid19_30yo_female_RTG.jpeg',0)
 
-
+plt.imshow(images_new)
+# plt.show()
 
 for i in imgList:
     imgCurr = cv2.imread(f'{path}/{i}', 0)
     images.append(imgCurr)
 
 trans = cv2.GaussianBlur(images_new, (5,5), 0)
+
+images_new = cv2.equalizeHist(images_new)
+
 cimg = cv2.cvtColor(images_new, cv2.COLOR_GRAY2BGR)
 plt.imshow(cimg)
-plt.show()
+# plt.show()
 
-_, thresh = cv2.threshold(trans, 140, 255, cv2.THRESH_TOZERO)
+_, thresh = cv2.threshold(trans, 127, 255, cv2.THRESH_TOZERO)
 # thresh = cv2.Canny(trans, 40, 40)
 plt.imshow(thresh,  cmap='gray')
-plt.show()
+# plt.show()
 
-circles = cv2.HoughCircles(thresh, cv2.HOUGH_GRADIENT, 1, 20,
-                            param1=50, param2=30, minRadius=0,maxRadius=0)
+circles = cv2.HoughCircles(thresh, cv2.HOUGH_GRADIENT, 1, 1000,
+                            param1=50, param2=30, minRadius=200,maxRadius=0)
 circles = np.uint16(np.around(circles))
 for i in circles[0,:]:
     # draw the outer circle
@@ -38,23 +42,3 @@ for i in circles[0,:]:
 
 plt.imshow(cimg)
 plt.show()
-
-# for i in images:
-#     trans = cv2.GaussianBlur(i, (5,5), 0)
-#     # trans = cv2.Laplacian(i, cv2.CV_64F)
-#     plt.imshow(trans, cmap='gray')
-#     plt.show()
-#
-#     _, thresh = cv2.threshold(trans, 20, 255, cv2.THRESH_BINARY)
-#     plt.imshow(thresh, cmap='gray')
-#     plt.show()
-#
-#     dilated = cv2.dilate(thresh, None, iterations=3)
-#     plt.imshow(dilated)
-#     plt.show()
-#
-#     countours, _ = cv2.findContours(dilated, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-#
-#     (x, y, w, h) = cv2.boundingRect(countours)
-#     crop_img = i[y:y+h, x:x+w]
-#     plt.imshow(crop_img, cmap='gray')
