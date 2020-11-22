@@ -33,7 +33,11 @@ def data_as_tensors_aug(directory,target,batch,mode,rotation=60,width=0.3,height
 	generator = datagen.flow_from_directory(directory, target_size=(target,target), batch_size=batch, class_mode=mode)
 	return generator
 	
-	
+#Przkeazuje dane w postaci pojdynczego tensora, nie generatora
+#	directory - ścieżka do folderu z obrazami
+#	files_number - pierwszy wymiar tensora (ilość próbek)
+#	target_size - rozmiar obrazu, do którego zostaną przekształcone dane wejściowe (drugi i trzeci wymiar tensora)
+#	class_mode - sposób klasyfikacji obrazu (binary,categorical)
 def data_as_tensors_vectorize(directory,files_number,target_size,class_mode):
 	data_generator = data_as_tensors(directory,target_size,files_number,class_mode)
 	for data_batch, labels_batch in data_generator:
