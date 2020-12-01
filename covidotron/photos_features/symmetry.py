@@ -2,11 +2,62 @@ import cv2
 import os
 from matplotlib import pyplot as plt
 import numpy as np
+from scipy import signal
+from scipy.signal import butter,filtfilt
+from scipy.signal import find_peaks
 
-img = cv2.imread('pics/COVID-19/covid19_30yo_female_RTG.jpeg',0)
+filename = 'pics/COVID-19/covid19_43yo_male_RTG.jpg'
+img = cv2.imread(filename,0)
 
-G_X = cv2.reduce(img, 0 ,cv2.REDUCE_SUM)
-G_Y = cv2.reduce(img, 1 ,cv2.REDUCE_SUM)
+kernel = np.ones((5,5),np.uint8)
 
-plt.imghow(G_X)
+# img = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
+img = cv2.equalizeHist(img)
+img = cv2.erode(img,kernel,iterations = 2)
+img = cv2.dilate(img,kernel,iterations = 2)
+
+plt.imshow(img, cmap='gray')
+plt.show()
+
+# img = cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_MEAN_C,\
+#             cv2.THRESH_BINARY,11,2)
+
+# ret,img = cv2.threshold(img,180,255,cv2.THRESH_TRUNC)
+# img = cv2.Sobel(img,cv2.CV_64F,1,0,ksize=5)
+# img = np.uint8(img)
+# gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+# gray = np.float32(img)
+# img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
+
+# ret,img = cv2.threshold(img,127,255,cv2.THRESH_TRUNC)
+img = cv2.erode(img,kernel,iterations = 4)
+# img = cv2.dilate(img,kernel,iterations = 4)
+# img = cv2.equalizeHist(img)
+
+# ret,img = cv2.threshold(img,180,255,cv2.THRESH_TOZERO)
+
+
+
+plt.imshow(img, cmap='gray')
+plt.show()
+
+x_list = np.sum(img, 0)
+
+y_list = []
+for i in img:
+    y_list.append(i.sum())
+
+xp = np.linspace(0, len(img[0]), len(img[0]))
+yp = np.linspace(0, len(img), len(img))
+
+p10x = np.poly1d(np.polyfit(xp, x_list, 10))
+p10y = np.poly1d(np.polyfit(yp, y_list, 10))
+
+plt.subplot(121)
+plt.plot(xp, x_list, '.', xp, p10x, '--')
+plt.title('OX')
+plt.subplot(122)
+plt.title('OY')
+plt.plot(y_list)
+
 plt.show()
